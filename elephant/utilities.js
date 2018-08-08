@@ -8,25 +8,32 @@ var fs = require('fs');
 var colors = require('colors');
 var readline = require('readline');
 
-async function readcsv(csvFilePath) {
+function readcsv(csvFilePath) {
     var data =[];
-    if (fileExists(csvFilePath)) {
-        const rl = await readline.createInterface({
-            input: fs.createReadStream(csvFilePath),
-            crlfDelay: Infinity
-        });
-
-        rl.on('line', function (line) {
-            line = line.trim();
-            data.push(line.split(" ").map(x=>parseInt(x)));
-            
-        }).on('close', () => {
-            console.log(data);
-        })
-            ;
-    } else {
-        console.log('cannot read the file');
-    }
+    
+    return new Promise((resolve,reject)=>{
+        let count=0;
+        if (fileExists(csvFilePath)) {
+            const rl = readline.createInterface({
+                input: fs.createReadStream(csvFilePath),
+                crlfDelay: Infinity
+            });
+    
+            rl.on('line', function (line) {
+                line = line.trim();
+                line = line.split(" ");
+                line.unshift(++count);
+                data.push(line.map(x=>parseInt(x)));
+                
+            }).on('close', () => {
+                resolve(data);
+            })
+                ;
+        } else {
+            reject('Cannot read csv');
+        }
+    })
+    
 }
 
 async function validateInt(num){

@@ -29,5 +29,17 @@ if (!process.argv.slice(2).length || !/[arudl]/.test(process.argv.slice(2))) {
 }
 
 program.parse(process.argv)    */
+utilities.readcsv('data.txt').then((resp) => {
+    resp = resp.sort((a, b) => {
+        return a[1] - b[1];
+    })
 
-utilities.readcsv('data.txt');
+    resp.forEach((element, index) => {
+        console.log(element);
+        // if(element[1]<resp[index+1][1] && element[2]>resp[index+1][2]){
+        //     console.log(element[0])
+        // }
+    });
+
+}).catch(err => console.error(err));
+
